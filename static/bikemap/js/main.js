@@ -52,5 +52,41 @@ function loadRoutes() {
     .catch(errorCallback);
 }
 
+function saveRoute(method, request_data, id=null) {
+    url = id ? `${ROUTE_URL}${id}/` : ROUTE_URL;
+    fetch(url, {
+        method,
+        headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(request_data) // body data type must match "Content-Type" header
+    })
+    .then(response => location.reload())
+    .catch(errorCallback);
+}
+function createRoute() {
+    // function for create route from createRoute modal
+    name = document.querySelector('#create-route-form #name').value;
+    coordinate_file = document.querySelector('#create-route-form #coordinates').files[0];
+    if (coordinate_file && name) {
+        readFile(coordinate_file)
+        .then(content => JSON.parse(content))
+        .then(coordinates => {
+            saveRoute('POST', {
+                "name": name,
+                "paths": {
+                    "type": "MultiLineString",
+                    "coordinates": JSON.parse(coordinates.polyline)
+                }
+            });
+        })
+        .catch(err => console.log(err));
+    } else {
+        if (!name) document.getElementById('name_error').innerHTML = 'Name is required.';
+        if (!coordinate_file) document.getElementById('coordinates_error').innerHTML = 'Coordinate file is required.';
+    }
+}
+
 loadRoutes();
 
