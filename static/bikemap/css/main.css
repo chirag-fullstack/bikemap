@@ -1,0 +1,57 @@
+.header {
+    background: #333;
+    color: #fff;
+    height: 70px;
+}
+
+#L-map {
+    width: 100%;
+    height: 80%;
+}
+.sidebar {
+    height: Calc(100vh - 70px);
+}
+#route-list {
+    border-right: 1px solid #ddd;
+    height: 100%;
+}
+.route-container {
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+}
+.active-route-header {
+    padding: 10px 0;
+}
+#active-route-name {
+    color: #444;
+}
+.route {
+    padding: 10px;
+    color: #555;
+    cursor: pointer;
+    width: 70%;
+    display: inline-block;
+}
+.route-edit {
+    padding: 10px;
+    color: #555;
+    cursor: pointer;
+    width: 15%;
+    display: inline-block;
+}
+.route-del {
+    padding: 10px;
+    color: #555;
+    cursor: pointer;
+    width: 15%;
+    display: inline-block;
+}
+
+.route.active {
+    font-size: 1.2em;
+    text-decoration: underline;
+}
+
+.route-id {
+    color: #555;
+}
