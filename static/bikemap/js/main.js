@@ -47,8 +47,17 @@ function createRouteElement(route) {
         showUpdateRouteModal(route.id);
     });
 
+    del_el = document.createElement('div');
+    del_el.innerHTML = '<i class="far fa-trash-alt"></i>';
+    del_el.className = 'route-del';
+    del_el.addEventListener('click', function() {
+        if (window.confirm('Are you sure to delete this route?'))
+            deleteRoute(route.id);
+    });
+
     cont_el.appendChild(el);
     cont_el.appendChild(edit_el);
+    cont_el.appendChild(del_el);
     return cont_el
 }
 
@@ -131,6 +140,21 @@ function updateRoute() {
     } else {
         if (!name) document.getElementById('updated_name_error').innerHTML = 'Name is required.';
     }
+}
+
+function deleteRoute(id) {
+    // function to delete a route
+    fetch(`${ROUTE_URL}${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+    })
+    .then(response => {
+        response.ok ? location.reload() : errorCallback()
+    })
+    .catch(errorCallback);
 }
 
 // Stuffs on document load
