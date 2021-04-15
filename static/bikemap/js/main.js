@@ -17,6 +17,14 @@ function plotRouteMap(event) {
     createMap(routes[route_id]["coordinates"]);
 }
 
+function showUpdateRouteModal(id) {
+    // function to update bootstrap modal on edit a route
+    $('.route-id').text('#' + id);
+    $('#updated-route-id').val(id);
+    $('#updated-name').val(routes[id].name);
+    $('#updateRouteModal').modal('show');
+}
+
 function createRouteElement(route) {
     // function to create element for list
     cont_el = document.createElement('div');
@@ -32,7 +40,15 @@ function createRouteElement(route) {
     el.className = 'route';
     el.addEventListener('click', plotRouteMap);
 
+    edit_el = document.createElement('div');
+    edit_el.innerHTML = '<i class="fas fa-edit"></i>';
+    edit_el.className = 'route-edit';
+    edit_el.addEventListener('click', function() {
+        showUpdateRouteModal(route.id);
+    });
+
     cont_el.appendChild(el);
+    cont_el.appendChild(edit_el);
     return cont_el
 }
 
@@ -65,6 +81,7 @@ function saveRoute(method, request_data, id=null) {
     .then(response => location.reload())
     .catch(errorCallback);
 }
+
 function createRoute() {
     // function for create route from createRoute modal
     name = document.querySelector('#create-route-form #name').value;
@@ -85,6 +102,34 @@ function createRoute() {
     } else {
         if (!name) document.getElementById('name_error').innerHTML = 'Name is required.';
         if (!coordinate_file) document.getElementById('coordinates_error').innerHTML = 'Coordinate file is required.';
+    }
+}
+
+function updateRoute() {
+    id = document.querySelector('#update-route-form #updated-route-id').value;
+    name = document.querySelector('#update-route-form #updated-name').value;
+    coordinates = document.querySelector('#update-route-form #updated-coordinates').files[0];
+    if (name && !coordinates && name !== routes[id].name) {
+        saveRoute('PATCH', {
+            "id": + id,
+            "name": name
+        }, id)
+    } else if (coordinates && name) {
+        readFile(coordinates)
+        .then(content => JSON.parse(content))
+        .then(coordinates => {
+            saveRoute('PATCH', {
+                "id": + id,
+                "name": name,
+                "paths": {
+                    "type": "MultiLineString",
+                    "coordinates": JSON.parse(coordinates.polyline)
+                }
+            }, id);
+        })
+        .catch(errorCallback);
+    } else {
+        if (!name) document.getElementById('updated_name_error').innerHTML = 'Name is required.';
     }
 }
 
