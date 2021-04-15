@@ -32,3 +32,11 @@ function readFile(file) {
     fr.readAsText(file)
   })
 }
+
+function reverseCoordinates(coordinates) {
+    // reversing coordinates for L map
+    for(let i=0; i < coordinates.length; i++) {
+        coordinates[i].forEach(coordinate => coordinate.reverse());
+    }
+    return coordinates
+}

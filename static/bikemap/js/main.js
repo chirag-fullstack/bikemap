@@ -24,7 +24,7 @@ function createRouteElement(route) {
 
     routes[route.id] = {
         "name": route.name,
-        "coordinates": route.paths.coordinates
+        "coordinates": reverseCoordinates(route.paths.coordinates) // L map coordinate are reverse of what django use
     }
     el = document.createElement('div');
     el.innerHTML = route.name;
