@@ -133,5 +133,18 @@ function updateRoute() {
     }
 }
 
-loadRoutes();
+// Stuffs on document load
+(function() {
+    // load route list
+    loadRoutes();
 
+    // bootstrap modal events
+    $('#createRouteModal').on('show.bs.modal, hide.bs.modal', function (e) {
+        document.getElementById('create-route-form').reset();
+        Array.from(document.querySelectorAll('#create-route-form small.error')).forEach(el=> el.innerHTML = '');
+    });
+    $('#updateRouteModal').on('hide.bs.modal', function (e) {
+        document.getElementById('update-route-form').reset();
+        Array.from(document.querySelectorAll('#update-route-form small.error')).forEach(el=> el.innerHTML = '');
+    });
+})();
