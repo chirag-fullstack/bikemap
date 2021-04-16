@@ -8,5 +8,5 @@ class RouteViewSet(ModelViewSet):
     """
     API view with supported methods GET, POST, DELETE, PUT and PATCH
     """
-    queryset = Route.objects.all()
+    queryset = Route.objects.all().order_by('-updated')
     serializer_class = RouteSerializer
