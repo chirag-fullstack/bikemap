@@ -6,7 +6,7 @@ from django.test import Client
 
 class RouteTestCase(TestCase):
     """
-    Route API test for list, create, update and delete actions
+    Route API test for CRUD actions
     """
 
     def setUp(self):
@@ -26,6 +26,8 @@ class RouteTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
+        # Below test cases are dependent on above post call
+        # If we want to remove this dependency we can use db fixtures
         # test route list api
         response = self.client.get('/api/routes/', content_type='application/json')
         data = response.data

@@ -1,4 +1,5 @@
-
+// holds all the routes details like name and coordinates
+// Used for map plotting and route update
 routes = {}
 
 function errorCallback(err) {
@@ -7,6 +8,7 @@ function errorCallback(err) {
 
 function plotRouteMap(event) {
     // function for plotting map for each route
+    // also mark the selected route as active
     if (isActive(event.target)) return false;
     active_route = document.getElementsByClassName('active');
     if (active_route.length > 0)
@@ -30,10 +32,6 @@ function createRouteElement(route) {
     cont_el = document.createElement('div');
     cont_el.className = 'route-container';
 
-    routes[route.id] = {
-        "name": route.name,
-        "coordinates": reverseCoordinates(route.paths.coordinates) // L map coordinate are reverse of what django use
-    }
     el = document.createElement('div');
     el.innerHTML = route.name;
     el.id = route.id;
@@ -67,6 +65,13 @@ function loadRoutes() {
     .then(response => response.json())
     .then(data => {
         data.map(route => {
+            // Update routes data store
+            routes[route.id] = {
+                "name": route.name,
+                "coordinates": reverseCoordinates(route.paths.coordinates) // L map coordinate are reverse of what django use
+            }
+
+            // append list element of each route
             document.getElementById('route-list').appendChild(createRouteElement(route));
 
             // Active first route
@@ -78,6 +83,10 @@ function loadRoutes() {
 }
 
 function saveRoute(method, request_data, id=null) {
+    // function for saving route details
+    // param: method (POST, PUT, PATCH)
+    // param: request_data ({name, paths: {type: "MultiLineString", coordinates: [[[lat1, long1], [lat2, long2],]]}})
+    // param: id (Required on update method)
     url = id ? `${ROUTE_URL}${id}/` : ROUTE_URL;
     fetch(url, {
         method,
@@ -96,6 +105,7 @@ function createRoute() {
     name = document.querySelector('#create-route-form #name').value;
     coordinate_file = document.querySelector('#create-route-form #coordinates').files[0];
     if (coordinate_file && name) {
+        // Read the content of json file to format it for route api
         readFile(coordinate_file)
         .then(content => JSON.parse(content))
         .then(coordinates => {
@@ -115,15 +125,18 @@ function createRoute() {
 }
 
 function updateRoute() {
+    // function to update route
     id = document.querySelector('#update-route-form #updated-route-id').value;
     name = document.querySelector('#update-route-form #updated-name').value;
     coordinates = document.querySelector('#update-route-form #updated-coordinates').files[0];
     if (name && !coordinates && name !== routes[id].name) {
+        // update name only if changed
         saveRoute('PATCH', {
             "id": + id,
             "name": name
         }, id)
     } else if (coordinates && name) {
+        // Read the content of json file to format it for route api
         readFile(coordinates)
         .then(content => JSON.parse(content))
         .then(coordinates => {
