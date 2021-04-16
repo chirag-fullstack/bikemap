@@ -15,7 +15,12 @@ Following are the requirements to run this app.
 ## Installation
 
 ```bash
-git clone <repo-url>
+# Create virtual environment
+virtualenv -p /usr/bin/python3.8 bikemap-venv
+source bikemap-venv/bin/activate
+
+# Clone the app from its repo
+git clone https://github.com/chirag-fullstack/bikemap
 cd bikemap
 pip3 install -r requirements.txt
 
@@ -25,6 +30,7 @@ sudo apt install python3-gdal
 sudo apt install binutils libproj-dev
 sudo apt install postgis postgresql-11-postgis-3
 
+# migrate db migrations
 python3 manage.py migrate
 ```
 
